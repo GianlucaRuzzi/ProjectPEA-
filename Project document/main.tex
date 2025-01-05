@@ -1,0 +1,307 @@
+\documentclass[11pt,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\usepackage{titlesec}
+\usepackage{graphicx} % opzionale per immagini o decorazioni
+\usepackage{titlesec} % Pacchetto per decorare i titoli
+
+\usepackage{listings}
+
+\lstdefinelanguage{Alloy}{
+    keywords={abstract, but, extends, iff, lone, one, set, all, check, fact, implies, module, open, sig, and, disj, for, in, no, or, some, as, else, fun, Int, none, pred, sum, assert, exactly, iden, let, not, run, univ},
+    sensitive=true,
+    comment=[l]{//},         
+    morecomment=[s]{/*}{*/}, 
+    morestring=[b]",         
+}
+
+\lstset{
+    basicstyle=\small\ttfamily,          
+    keywordstyle=\color{blue},     
+    commentstyle=\color{green},     
+    stringstyle=\color{red}, 
+    tabsize = 2,
+    xleftmargin = 0cm,
+    xrightmargin = 0cm,
+    language=Alloy                 
+}
+
+\titleformat{\section} % Stile della section
+  {\normalfont\huge\bfseries} % Stile del testo: font normale, LARGE (dimensione), grassetto
+  {\thesection} % Mostra il numero della section
+  {1em} % Spaziatura tra numero e titolo
+  {} % Cosa appare prima del titolo (vuoto in questo caso)
+
+
+\renewcommand{\thesubsection}{\Alph{subsection}} % Numerazione con lettere maiuscole
+\titleformat{\subsection}[hang]
+{\normalfont\LARGE\bfseries} % Stile del titolo della subsection
+{\thesubsection} % Visualizza la lettera
+{1em}{} % Distanza tra la lettera e il titolo
+
+
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}} % Numerazione A.1
+\titleformat{\subsubsection}[hang]
+{\normalfont\Large\bfseries} % Stile del titolo della subsubsection
+{\thesubsubsection} % Visualizza il numero A.1
+{1em}{} % Distanza tra il numero e il titolo
+
+%% !TEX root = main.tex
+% Page margins, header and footer positions
+\usepackage{geometry}
+\geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=25mm,
+ right=25mm,
+ top=30mm,
+ bottom=25mm,
+ headsep=7mm
+}
+
+\interfootnotelinepenalty=10000
+
+% To display filling dots in the TOC for all entries
+\usepackage[titles]{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% Define new header and footer style #in each page
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\color{Gray}{\small{Project by Gianluca Ruzzi}}}
+\lfoot{\textcolor{Gray}{\small{Copyright © 2025, Gianluca Ruzzi – All rights reserved}}}
+\rfoot{\textcolor{Gray}{\thepage}}
+\renewcommand{\headrulewidth}{0pt}
+
+% PACKAGES
+\usepackage{wasysym}
+\usepackage{pifont}
+
+\newcommand{\supported}{\ding{52}\xspace}
+\newcommand{\unsupported}{\ding{55}\xspace}
+\newcommand{\partsupported}{\textcolor{black!40}{\ding{52}}\xspace}
+\newcommand{\lowsupported}{\textcolor{black!20}{\ding{52}}\xspace}
+\newcommand{\unknowsupported}{\textbf{?}\xspace}
+
+% Font: Times
+\usepackage{times}
+% Change monospaced font
+\renewcommand{\ttdefault}{lmtt}
+
+% Tables
+\usepackage{tabu}
+\usepackage{tabularx}
+\usepackage{ltablex}
+\usepackage{longtable}
+\usepackage{float}
+
+% Landscape mode
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage{caption}
+
+% Make landscape mode be sensitive to even and odd pages
+\def\myrotate{\ifodd\c@page\else-\fi 90}
+\makeatletter
+\global\let\orig@begin@landscape=\landscape%
+\global\let\orig@end@landscape=\endlandscape%
+\gdef\@true{1}
+\gdef\@false{0}
+\gdef\landscape{%
+    \global\let\within@landscape=\@true%
+    \orig@begin@landscape%
+}%
+\gdef\endlandscape{%
+    \orig@end@landscape%
+    \global\let\within@landscape=\@false%
+}%
+\@ifpackageloaded{pdflscape}{%
+    \gdef\pdf@landscape@rotate{\PLS@Rotate}%
+}{
+    \gdef\pdf@landscape@rotate#1{}%
+}
+\let\latex@outputpage\@outputpage
+\def\@outputpage{
+    \ifx\within@landscape\@true%
+        \if@twoside%
+            \ifodd\c@page%
+                \gdef\LS@rot{\setbox\@outputbox\vbox{%
+                    \pdf@landscape@rotate{-90}%
+                    \hbox{\rotatebox{90}{\hbox{\rotatebox{180}{\box\@outputbox}}}}}%
+                }%
+            \else%
+                \gdef\LS@rot{\setbox\@outputbox\vbox{%
+                    \pdf@landscape@rotate{+90}%
+                    \hbox{\rotatebox{90}{\hbox{\rotatebox{0}{\box\@outputbox}}}}}%
+                }%
+            \fi%
+        \else%
+            \gdef\LS@rot{\setbox\@outputbox\vbox{%
+                \pdf@landscape@rotate{+90}%
+                \hbox{\rotatebox{90}{\hbox{\rotatebox{0}{\box\@outputbox}}}}}%
+            }%
+        \fi%
+    \fi%
+    \latex@outputpage%
+}
+\makeatother
+
+% Graphics
+\usepackage{graphicx}
+\usepackage[dvipsnames, table]{xcolor}
+
+
+% Other
+\usepackage{ifthen}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage[pdftex, colorlinks]{hyperref}
+\newcommand{\comment}[1]{{\color{Red}$\blacktriangleright$ Comment: #1 $\blacktriangleleft$}}
+
+
+% Some utilities
+\input{util/highlight}
+\input{util/abbrev}
+
+\begin{document}
+
+% Definizione dei colori
+\definecolor{darkblue}{RGB}{0,51,102} % Blu scuro
+
+% Personalizzazione delle sezioni
+\titleformat{\section} % Formato delle sezioni
+  {\normalfont} % Stile di base
+  {\color{darkblue}\fontsize{40}{40}\bfseries\thesection\ |} % Numero sezione e linea più grandi
+  {0.3em} % Spaziatura tra numero e titolo
+  {\color{darkblue}\normalfont\Huge\bfseries} % Titolo in blu scuro
+  [\vspace{0.5em}\titlerule] % Linea decorativa sotto il titolo
+
+% Personalizzazione delle subsections
+\titleformat{\subsection} % Sottosezioni
+  {\normalfont\color{darkblue}\LARGE\bfseries} % Stile del testo: blu, grande e grassetto
+  {\thesubsection} 
+  {1em} % Spaziatura tra numero e titolo
+  {} % Testo senza decorazioni
+  [] % Nessuna decorazione aggiuntiva
+
+\definecolor{mediumblue}{RGB}{51,102,153} % Blu più chiaro per subsubsections
+
+% Personalizzazione delle subsubsections
+\titleformat{\subsubsection} % Subsubsections
+  {\normalfont\color{mediumblue}\large} % Blu più chiaro e stile meno grassetto
+  {\thesubsubsection} 
+  {1em} % Spaziatura
+  {} % Nessuna decorazione aggiuntiva
+  []
+  
+% TITLE PAGE
+\begin{titlepage}
+% LOGO
+{\begin{table}[t!]
+\centering
+\begin{tabu} to \textwidth { X[1.0,r,p] X[1.7,l,p] }
+\textcolor{Blue}
+{\textcolor{darkblue}{\textbf{\small{Performance Evaluation and Application project - 2024/2025}}}} & \includegraphics[scale=0.8]{images/PolimiLogo}
+\end{tabu}
+\end{table}}~\\ [4 cm]
+
+
+% TITLE 
+\begin{center} %centered
+{\textcolor{darkblue}{\textbf{\Huge{Executing AI algorithm with a coprocessor}}}} \\ [1cm]
+{\textit{\huge{Project type C}}} 
+\end{center}~\\ [3 cm]
+
+
+\begin{center}
+\textbf{\huge{Author:}} \\ [1 cm]
+\end{center}
+
+\hrule
+\begin{itemize}
+\item {\Large Gianluca Ruzzi}
+\end{itemize}
+\hrule
+
+\end{titlepage}
+
+
+
+
+
+
+
+
+% Define deliverable specific info
+\begin{table}[h!]
+\begin{tabu} to \textwidth { X[0.3,r,p] X[0.7,l,p] }
+\hline
+\textbf{Deliverable:} & Project type C\\
+\textbf{Title:} & Executing AI algorithm with a coprocessor \\
+\textbf{Author:} & Gianluca Ruzzi \\
+\textbf{Version:} & 1.0 \\ 
+\textbf{Date:} & 10-January-2025 \\
+\textbf{Course:} & Performance Evaluation and Application\\
+\textbf{Professor:} & Marco Gribaudo \\
+\textbf{Copyright:} & Copyright © 2025, Gianluca Ruzzi – All rights reserved \\
+\hline
+\end{tabu}
+\end{table}
+
+\setcounter{page}{2}
+
+\newpage
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+\newpage
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+
+\clearpage
+{\color{Blue}{\section{Introduction}}}
+\label{sect:Introduction}
+\input{Project document/files/introduction}
+
+\clearpage
+{\color{Blue}{\section{Model Architectural Design}}}
+\label{sect:Model Architectural Design}
+\input{Project document/files/modelarchitecturaldesign}
+
+
+\clearpage
+{\color{Blue}{\section{Solutions}}}
+\label{sect:Solutions}
+\input{Project document/files/solutions}
+
+\clearpage
+{\color{Blue}{\section{Effort Spent}}}
+\label{sect:effort}
+\input{Project document/files/effort}
+
+\clearpage
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{plain}
+\bibliography{main}
+The document is based on the following materials:
+\begin{enumerate}
+    \item The specification of the RASD and DD assignment of the Software Engineering II
+course a.a. 2024/2025
+    \item Slides of the course on WeBeep
+    \item The RASD document example given during the Software Engineering II
+course
+\end{enumerate}
+The tools used for the realization of this project are:
+\begin{enumerate}
+    \item \hyperlink{https://staruml.io/}{Star UML}: for the diagrams realization
+    \item  \hyperlink{https://moqups.com/it/}{moqups.com}: for the UI mockups
+    \item \hyperlink{https://alloytools.org/}{alloy.org}: for the Alloy models
+\end{enumerate}
+
+
+\end{document}
